@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Vaccination Report</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+    <h2>Vaccination Report</h2>
+    <button onclick="loadReport()">Load Vaccination Records</button>
+    <table id="reportTable">
+        <thead>
+            <tr>
+                <th>Record ID</th>
+                <th>User ID</th>
+                <th>Vaccine Type</th>
+                <th>Dose Number</th>
+                <th>Vaccination Date</th>
+                <th>Vaccination Center</th>
+                <th>Region</th>
+                <th>Location</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <script>
+        function loadReport() {
+            fetch('http://localhost/prs/api/vaccination_report.php')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === "success") {
+                        const tbody = document.querySelector("#reportTable tbody");
+                        tbody.innerHTML = "";
+                        data.data.forEach(row => {
+                            const tr = document.createElement("tr");
+                            tr.innerHTML = `
+                                <td>${row.record_id}</td>
+                                <td>${row.user_id}</td>
+                                <td>${row.vaccine_type}</td>
+                                <td>${row.dose_number}</td>
+                                <td>${row.vaccination_date}</td>
+                                <td>${row.vaccination_center}</td>
+                                <td>${row.region}</td>
+                                <td>${row.location}</td>
+                            `;
+                            tbody.appendChild(tr);
+                        });
+                    }
+                })
+                .catch(error => {
+                    alert("Error loading data");
+                    console.error(error);
+                });
+        }
+    </script>
+</body>
+</html>

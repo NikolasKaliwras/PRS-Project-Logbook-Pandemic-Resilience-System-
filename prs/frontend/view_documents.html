@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>View Uploaded Documents</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h2>View Uploaded Documents</h2>
+        <label for="userId">User ID:</label>
+        <input type="text" id="userId" placeholder="Enter User ID">
+
+        <label for="apiKey">API Key:</label>
+        <input type="text" id="apiKey" placeholder="Enter API Key">
+
+        <button id="viewDocuments">Show Documents</button>
+
+        <ul id="documentList"></ul>
+    </div>
+
+    <script>
+        document.getElementById("viewDocuments").addEventListener("click", async function () {
+            const userId = document.getElementById("userId").value;
+            const apiKey = document.getElementById("apiKey").value;
+
+            if (!userId || !apiKey) {
+                alert("Please enter both User ID and API Key.");
+                return;
+            }
+
+            try {
+                const response = await fetch(`http://localhost/prs/api/get_documents.php?user_id=${userId}&key=${apiKey}`);
+                const result = await response.json();
+
+                const list = document.getElementById("documentList");
+                list.innerHTML = "";
+
+                if (result.status === "success" && result.data.length > 0) {
+                    result.data.forEach(doc => {
+                        const fileUrl = `http://localhost/prs/api/${doc.filepath}`;
+                        list.innerHTML += `<li><strong>${doc.filename}</strong> - <a href="${fileUrl}" target="_blank">Download</a></li>`;
+                    });
+                } else {
+                    list.innerHTML = "<li>No documents found.</li>";
+                }
+            } catch (error) {
+                console.error("Fetch error:", error);
+                alert("An error occurred while loading documents.");
+            }
+        });
+    </script>
+</body>
+</html>

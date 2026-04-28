@@ -1,0 +1,53 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Upload Document</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Upload Document</h2>
+        <label>User ID:</label>
+        <input type="text" id="userId"><br>
+        <label>Document Name:</label>
+        <input type="text" id="docName"><br>
+        <label>Select File:</label>
+        <input type="file" id="fileInput"><br><br>
+        <button id="upload">Upload Document</button>
+    </div>
+
+    <script>
+    document.getElementById("upload").addEventListener("click", async function () {
+        const userId = document.getElementById("userId").value;
+        const docName = document.getElementById("docName").value;
+        const fileInput = document.getElementById("fileInput").files[0];
+        const key = "my_secret_key_123"; // ✅ Σωστό API key
+
+        if (!userId || !docName || !fileInput || !key) {
+            alert("Please fill all fields and select a file.");
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append("user_id", userId);
+        formData.append("document_name", docName);
+        formData.append("key", key);
+        formData.append("file", fileInput);
+
+        try {
+            const response = await fetch("http://localhost/prs/api/upload_document.php", {
+                method: "POST",
+                body: formData
+            });
+            const result = await response.json();
+            alert(JSON.stringify(result));
+        } catch (error) {
+            console.error("Upload failed:", error);
+            alert("Upload failed");
+        }
+    });
+    </script>
+</body>
+</html>

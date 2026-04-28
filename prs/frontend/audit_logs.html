@@ -1,0 +1,79 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Audit Logs</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Audit Logs Viewer</h1>
+        <label for="userId">User ID:</label>
+        <input type="number" id="userId" placeholder="Enter your user ID" required>
+
+        <label for="apiKey">API Key:</label>
+        <input type="text" id="apiKey" placeholder="Enter your API key" required>
+
+        <button onclick="loadLogs()">Load Logs</button>
+
+        <div id="logContainer"></div>
+    </div>
+
+    <script>
+        async function loadLogs() {
+            const userId = document.getElementById('userId').value;
+            const apiKey = document.getElementById('apiKey').value;
+            const container = document.getElementById('logContainer');
+            container.innerHTML = "";
+
+            if (!userId || !apiKey) {
+                alert("Please fill in both User ID and API Key");
+                return;
+            }
+
+            try {
+                const response = await fetch(`http://localhost/prs/api/get_logs.php?user_id=${userId}&key=${apiKey}`);
+                const result = await response.json();
+
+                if (result.status === "success") {
+                    if (result.data.length === 0) {
+                        container.innerHTML = "<p>No logs found.</p>";
+                        return;
+                    }
+
+                    const table = document.createElement("table");
+                    table.innerHTML = `
+                        <tr>
+                            <th>Log ID</th>
+                            <th>User ID</th>
+                            <th>Action</th>
+                            <th>Timestamp</th>
+                            <th>IP Address</th>
+                        </tr>
+                    `;
+
+                    result.data.forEach(log => {
+                        const row = document.createElement("tr");
+                        row.innerHTML = `
+                            <td>${log.log_id}</td>
+                            <td>${log.user_id}</td>
+                            <td>${log.action}</td>
+                            <td>${log.timestamp}</td>
+                            <td>${log.ip_address}</td>
+                        `;
+                        table.appendChild(row);
+                    });
+
+                    container.appendChild(table);
+                } else {
+                    container.innerHTML = `<p>Error: ${result.message}</p>`;
+                }
+            } catch (error) {
+                container.innerHTML = "<p>Failed to load logs.</p>";
+                console.error(error);
+            }
+        }
+    </script>
+</body>
+</html>

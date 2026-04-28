@@ -1,0 +1,31 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Vaccination Dashboard</title>
+    <script src="scripts.js"></script>
+</head>
+<body>
+    <h1>Vaccination Records</h1>
+
+    <label>User ID: <input type="number" id="user_id" /></label><br>
+    <label>API Key: <input type="text" id="api_key" /></label><br>
+    <button onclick="loadVaccinations()">Load Records</button>
+
+    <table border="1" id="vaccinationTable" style="margin-top: 20px;">
+        <thead>
+            <tr>
+                <th>Record ID</th>
+                <th>Vaccine Type</th>
+                <th>Dose Number</th>
+                <th>Date</th>
+                <th>Center</th>
+                <th>Region</th>
+                <th>Location</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</body>
+</html>
